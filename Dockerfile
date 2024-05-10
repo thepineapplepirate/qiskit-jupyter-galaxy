@@ -13,16 +13,6 @@ RUN apt-get -qq update && apt-get upgrade -y && apt-get install --no-install-rec
     libfreetype6-dev libpng-dev net-tools procps libreadline-dev wget software-properties-common gnupg2 curl ca-certificates && \
     apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Install CUDA Toolkit and CuDNN
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-RUN mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-
-RUN wget "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb" && dpkg -i cuda-keyring_1.0-1_all.deb && rm cuda-keyring_1.0-1_all.deb
-RUN add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
-RUN apt-get update
-RUN apt-get -y install cuda
-RUN apt-get -y install libcudnn8
-
 # Python packages
 RUN pip install --no-cache-dir \
     bioblend \
@@ -33,7 +23,6 @@ RUN pip install --no-cache-dir \
     jupytext \ 
     lckr-jupyterlab-variableinspector \
     jupyterlab_execute_time \
-    xeus-python \
     jupyterlab-kernelspy \
     jupyterlab-system-monitor \
     jupyterlab-fasta \
@@ -48,20 +37,20 @@ RUN pip install --no-cache-dir \
 RUN pip install --no-cache-dir voila
 
 ## Qiskit block 
-## INSTALL standard qiskit pypi packages
-RUN pip install 'qiskit>=1.0.1,<2.0.0'
+## INSTALL standard qiskit1.0 pypi package
+RUN pip install qiskit==1.0.2
 
-## INSTALL qiskit research
-RUN git clone https://github.com/qiskit-research/qiskit-research.git && cd qiskit-research && pip install .
+## INSTALL qiskit algorithms
+RUN pip install qiskit-algorithms==0.3.0
 
-## INSTALL xyz2pdb
+## INSTALL xyz-pdb
 RUN pip install qiskit-xyz2pdb 
 
 ## Add new alternative to IBMQ
 RUN pip install qiskit-ibm-provider
 
 ## Add qiskit runtime IBM client
-RUN pip install qiskit-ibm-runtime
+RUN pip install qiskit-ibm-runtime==0.22.0
 
 ## COPY all the tutorial files and accessory files
 RUN mkdir -p /home/$NB_USER/qiskit \
@@ -71,13 +60,16 @@ RUN mkdir -p /home/$NB_USER/qiskit \
     && curl -L https://github.com/qiskit-community/qiskit-textbook/tarball/master | tar -xz --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/qiskit-community-qiskit-textbook* /home/$NB_USER/qiskit/qiskit-textbook \
     && curl -L https://github.com/qiskit-community/qiskit-pocket-guide/tarball/master | tar -xz --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/qiskit-community-qiskit-pocket-guide* /home/$NB_USER/qiskit/qiskit-pocket-guide
 
-## Add the protein folding notebook version from qiskit-research
-RUN curl -L https://raw.githubusercontent.com/qiskit-community/qiskit-research/main/docs/protein_folding/protein_folding.ipynb > /home/$NB_USER/qiskit/qiskit-tutorials/tutorials/algorithms/protein_folding.ipynb
+## Add the protein folding repo from WL project
+RUN mkdir -p /home/$NB_USER/qiskit/quantum_protein_folding \
+    && curl -L https://github.com/ruihao-li/protein-folding-qc/tarball/docker_image_clone | tar -xzf --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/quantum_protein_folding* /home/$NB_USER/qiskit/quantum_protein_folding
 
 ## Add additional modules needed for most qiskit notebooks, including hello-world.ipynb
 RUN pip install pylatexenc
 
-RUN pip install matplotlib
+RUN pip install matplotlib==3.8.3
+
+RUN pip install numpy==1.26.4
 
 ##
 ## End Qiskit Block
