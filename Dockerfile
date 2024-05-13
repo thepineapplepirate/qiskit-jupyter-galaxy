@@ -71,7 +71,7 @@ RUN mkdir -p /home/$NB_USER/qiskit \
 
 ## Add the protein folding repo from WL project
 RUN mkdir -p /home/$NB_USER/qiskit/quantum_protein_folding \
-    && curl -L https://github.com/ruihao-li/protein-folding-qc/tarball/docker_image_clone | tar -xzf --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/quantum_protein_folding* /home/$NB_USER/qiskit/quantum_protein_folding
+    && tar -xzf qcpf.tar.gz --directory /home/$NB_USER/qiskit/quantum_protein_folding/
 
 ## Add additional modules needed for most qiskit notebooks, including hello-world.ipynb
 RUN pip install pylatexenc
