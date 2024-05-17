@@ -61,17 +61,12 @@ RUN pip install qiskit-ibm-provider
 ## Add qiskit runtime IBM client
 RUN pip install qiskit-ibm-runtime==0.22.0
 
-## COPY all the tutorial files and accessory files
-RUN mkdir -p /home/$NB_USER/qiskit \
-    && curl -L https://github.com/Qiskit/platypus/tarball/master | tar -xz --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/Qiskit-platypus* /home/$NB_USER/qiskit/platypus \
-    && curl -L https://github.com/Qiskit/qiskit-tutorials/tarball/master | tar -xz --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/Qiskit-qiskit-tutorials* /home/$NB_USER/qiskit/qiskit-tutorials \
-    && curl -L https://github.com/qiskit-community/qiskit-community-tutorials/tarball/master | tar -xz --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/qiskit-community-qiskit-community-tutorials* /home/$NB_USER/qiskit/qiskit-community-tutorials \
-    && curl -L https://github.com/qiskit-community/qiskit-textbook/tarball/master | tar -xz --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/qiskit-community-qiskit-textbook* /home/$NB_USER/qiskit/qiskit-textbook \
-    && curl -L https://github.com/qiskit-community/qiskit-pocket-guide/tarball/master | tar -xz --directory /home/$NB_USER/qiskit/ && mv /home/$NB_USER/qiskit/qiskit-community-qiskit-pocket-guide* /home/$NB_USER/qiskit/qiskit-pocket-guide
-
 ## Add the protein folding repo from WL project
 RUN mkdir -p /home/$NB_USER/qiskit/quantum_protein_folding \
-    && tar -xzf qcpf.tar.gz --directory /home/$NB_USER/qiskit/quantum_protein_folding/
+    &&  curl -L \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer <token> \
+        https://api.github.com/repos/ruihao-li/protein-folding-qc/tarball/docker_image_clone | tar -xz --directory /home/$NB_USER/qiskit/quantum_protein_folding/
 
 ## Add additional modules needed for most qiskit notebooks, including hello-world.ipynb
 RUN pip install pylatexenc
