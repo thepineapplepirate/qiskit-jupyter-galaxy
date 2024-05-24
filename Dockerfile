@@ -65,7 +65,7 @@ RUN pip install qiskit-ibm-runtime==0.22.0
 RUN mkdir -p /home/$NB_USER/qiskit/quantum_protein_folding \
     &&  curl -L \
         -H "Accept: application/vnd.github+json" \
-        -H "Authorization: Bearer <token> \
+        -H "Authorization: Bearer <token>" \
         https://api.github.com/repos/ruihao-li/protein-folding-qc/tarball/docker_image_clone | tar -xz --directory /home/$NB_USER/qiskit/quantum_protein_folding/
 
 ## Add additional modules needed for most qiskit notebooks, including hello-world.ipynb
@@ -74,6 +74,9 @@ RUN pip install pylatexenc
 RUN pip install matplotlib==3.8.3
 
 RUN pip install numpy==1.26.4
+
+## Installs Aer simulator packages with GPU support (for CUDA11 specifically), used for local testing and simulation (https://docs.quantum.ibm.com/verify/local-testing-mode)
+RUN pip install qiskit-aer-gpu-cu11
 
 ##
 ## End Qiskit Block
